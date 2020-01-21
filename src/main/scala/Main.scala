@@ -30,8 +30,21 @@ object Main extends App {
       insertSynth(midiSystem, audioSystem)
       audioServer.setClient(audioMixer)
       audioServer.start()
-      multiMidiSynth.getMidiInputs.get(0).transport(new ShortMessage, 0)
-      Thread.sleep(1000)
+
+      val midiInput = multiMidiSynth.getMidiInputs.get(0)
+      for (noteNumber <- 40 to 100) {
+        midiInput.transport(new ShortMessage(ShortMessage.NOTE_ON, noteNumber, 127), 0)
+        Thread.sleep(10)
+        midiInput.transport(new ShortMessage(ShortMessage.NOTE_OFF, noteNumber, 0), 0)
+        Thread.sleep(10)
+      }
+      for (noteNumber <- 100 to 40 by -1) {
+        midiInput.transport(new ShortMessage(ShortMessage.NOTE_ON, noteNumber, 127), 0)
+        Thread.sleep(10)
+        midiInput.transport(new ShortMessage(ShortMessage.NOTE_OFF, noteNumber, 0), 0)
+        Thread.sleep(10)
+      }
+
       audioServer.stop()
     } catch {
       case e: Exception =>

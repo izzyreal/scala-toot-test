@@ -10,3 +10,5 @@ fork := true
 
 libraryDependencies += "com.github.izzyreal" % "toot2" % "1.1"
 libraryDependencies += "com.github.izzyreal" % "tootaudioservers" % "1.0"
+libraryDependencies += "com.typesafe.akka" %% "akka-actor" % "2.5.27"
+libraryDependencies += "com.typesafe.akka" %% "akka-stream" % "2.5.27"

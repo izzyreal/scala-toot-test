@@ -3,4 +3,5 @@ out/
 build/
 target/
 
+welcome-out.wav
 *.iml

@@ -1,3 +1,5 @@
+package com.lunatech.akka.audio
+
 import javax.sound.midi.ShortMessage
 import uk.org.toot.audio.core.ChannelFormat
 import uk.org.toot.audio.mixer.{AudioMixer, MixerControls, MixerControlsFactory}
@@ -8,7 +10,7 @@ import uk.org.toot.synth.channels.valor.ValorSynthControls
 import uk.org.toot.synth.synths.multi.{MultiMidiSynth, MultiSynthControls}
 import uk.org.toot.synth.{SynthRack, SynthRackControls}
 
-object Main extends App {
+object TootMain extends App {
   private val audioServer = new JavaSoundAudioServer
 
   private var multiMidiSynth: MultiMidiSynth = _

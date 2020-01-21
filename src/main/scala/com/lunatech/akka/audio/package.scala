@@ -1,4 +1,4 @@
-package com.lightbend.demo
+package com.lunatech.akka
 
 import java.io.File
 
@@ -6,7 +6,7 @@ import akka.NotUsed
 import akka.stream.scaladsl.{Sink, Source}
 import uk.co.labbookpages.WavFile
 
-package object akkastreams {
+package object audio {
   type MQueue[A] = scala.collection.mutable.Queue[A]
   val MQueue = scala.collection.mutable.Queue
 
@@ -20,17 +20,6 @@ package object akkastreams {
 
   implicit class FilterStageOps(val s: (Int, Double)) extends AnyVal {
     def toFilterStage: FilterStage = FilterStage(s._1, s._2)
-  }
-
-  object WavWriter {
-    def apply(wavFile: WavFile) = {
-      val buf = new Array[Double](1)
-      Sink.foreach[Double] { s =>
-        buf(0) = s
-        println(buf.toVector)
-        //wavFile.writeFrames(buf, 1)
-      }
-    }
   }
 
   object WaveOutputFile {
@@ -50,7 +39,7 @@ package object akkastreams {
       val wavFile = WavFile.openWavFile(new File(wavFileName))
       val numChannels = wavFile.getNumChannels
       val numFrames = wavFile.getNumFrames
-      val validBits= wavFile.getValidBits
+      val validBits = wavFile.getValidBits
       val sampleRate = wavFile.getSampleRate
       println(s"Number of channels = $numChannels, number of frames: $numFrames, sampleRate: $sampleRate")
       val buffer = new Array[Double](256 * numChannels)
@@ -66,6 +55,7 @@ package object akkastreams {
             buf ++ buffer.toVector.take(n)
         }
       }
+
       val source = Source(rf(wavFile))
       wavFile.close()
       println(s"Source audio from $wavFileName")
@@ -74,5 +64,7 @@ package object akkastreams {
   }
 
   case class WaveSettings(numChannels: Int, numFrames: Long, validBits: Int, sampleRate: Long)
+
   case class WaveSource(source: Source[Double, NotUsed], waveSetting: WaveSettings)
+
 }

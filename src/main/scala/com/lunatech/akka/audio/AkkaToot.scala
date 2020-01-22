@@ -1,9 +1,10 @@
 package com.lunatech.akka.audio
 
 import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
+import akka.stream.{ActorMaterializer, Inlet, SinkShape}
+import uk.org.toot.audio.server.JavaSoundAudioServer
 
-object AkkaMain extends App {
+object AkkaToot extends App {
 
   import FilterElements._
 
@@ -20,15 +21,26 @@ object AkkaMain extends App {
 
   implicit val actorSystem = ActorSystem()
 
-  import actorSystem.dispatcher
-
   implicit val flowMaterializer = ActorMaterializer()
 
-  val runFlow =
+  val audioServer = new JavaSoundAudioServer
+  val mixer = Toot.mixer(audioServer)
+
+  val in: Inlet[Seq[Double]] = Inlet("AkkaTootAudioProcess")
+  val shape: SinkShape[Seq[Double]] = SinkShape(in)
+
+  val akkaTootBridge = new GraphStageLogicAudioProcess(shape)
+
+  val graphStage = new AkkaTootGraphStage(shape, akkaTootBridge)
+
+  mixer.getStrip("1").setInputProcess(akkaTootBridge)
+
+  audioServer.start()
+
+  val flow =
     soundSource
       .via(firBasedEcho)
-      .grouped(1000)
-      .runForeach(d => wavOutputFile.writeFrames(d.map(_ / 2.0).toArray, d.length))
+      .grouped(32768)
+      .runWith(graphStage)
 
-  runFlow flatMap { _ => actorSystem.terminate() } onComplete { _ => wavOutputFile.close() }
 }

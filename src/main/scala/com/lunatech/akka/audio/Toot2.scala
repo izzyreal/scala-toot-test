@@ -10,7 +10,7 @@ import uk.org.toot.synth.channels.valor.ValorSynthControls
 import uk.org.toot.synth.synths.multi.{MultiMidiSynth, MultiSynthControls}
 import uk.org.toot.synth.{SynthRack, SynthRackControls}
 
-object TootMain extends App {
+object Toot2 extends App {
 
   testFullSetup()
 

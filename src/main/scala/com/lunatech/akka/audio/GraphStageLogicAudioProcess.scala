@@ -10,7 +10,6 @@ class GraphStageLogicAudioProcess(shape: Shape)
   extends GraphStageLogic(shape) with IOAudioProcess {
 
   var ring = new CircularFifoQueue[Double](4000)
-//  var ring = Ring[Double](1000)()
 
   override def getChannelFormat: ChannelFormat = ChannelFormat.STEREO
 

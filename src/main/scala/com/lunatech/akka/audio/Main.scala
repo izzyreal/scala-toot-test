@@ -12,7 +12,7 @@ object Main extends App {
   import FilterElements._
 
   val firFilterStages: List[FilterStage] =
-    List((3000, -0.3), (1500, -0.2), (4500, -0.35)).map(_.toFilterStage)
+    List((15000, -0.35), (30000, -0.25), (45000, -0.15), (60000, -0.05)).map(_.toFilterStage)
 
   val firBasedEcho = buildFIR(firFilterStages)
 

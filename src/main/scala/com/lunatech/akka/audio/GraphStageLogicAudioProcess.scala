@@ -8,6 +8,8 @@ import uk.org.toot.audio.server.IOAudioProcess
 class GraphStageLogicAudioProcess(shape: Shape)
   extends GraphStageLogic(shape) with IOAudioProcess {
 
+  var buf = Array.emptyDoubleArray
+
   override def getChannelFormat: ChannelFormat = ChannelFormat.STEREO
 
   override def getName: String = "foo"
@@ -15,18 +17,19 @@ class GraphStageLogicAudioProcess(shape: Shape)
   override def open(): Unit = {}
 
   override def processAudio(buffer: AudioBuffer): Int = {
+    try {
+      val l: Array[Float] = buffer.getChannel(0)
+      val r: Array[Float] = buffer.getChannel(1)
 
-    val l: Array[Float] = buffer.getChannel(0)
-    val r: Array[Float] = buffer.getChannel(1)
-
-    val samples = grab(shape.inlets(0)).asInstanceOf[Seq[Double]]
-
-    for (i <- l.indices) {
-      l(i) = samples(i).toFloat
-      r(i) = samples(i).toFloat
+      for (i <- l.indices) {
+        l(i) = buf(i).toFloat
+        r(i) = buf(i).toFloat
+      }
+      buf = Array.emptyDoubleArray
+    } catch {
+      case (e: Exception) =>
+//        println(e.getMessage)
     }
-
-    pull(shape.inlets(0))
     AudioProcess.AUDIO_OK
   }
 

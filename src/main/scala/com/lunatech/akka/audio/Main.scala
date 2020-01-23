@@ -30,12 +30,13 @@ object Main extends App {
   val sink = new AkkaTootSink(mixer)
 
   audioServer.start()
+  println("AudioServer sample rate: " + audioServer.getSampleRate)
 
   val flow =
     Source.fromGraph(source)
       .via(firBasedEcho)
       .throttle(44100, 1.second)
-      .grouped(1000)
+      .grouped(88)
       .runWith(sink)
 
 }

@@ -7,13 +7,10 @@ import akka.stream.scaladsl.Source
 import uk.co.labbookpages.WavFile
 
 package object audio {
-  type MQueue[A] = scala.collection.mutable.Queue[A]
-  val MQueue = scala.collection.mutable.Queue
 
   type Seq[+A] = scala.collection.immutable.Seq[A]
-  val Seq = scala.collection.immutable.Seq
 
-  type Iterable[+A] = scala.collection.immutable.Iterable[A]
+  val MQueue = scala.collection.mutable.Queue
   val Iterable = scala.collection.immutable.Iterable
 
   case class FilterStage(delay: Int, coefficient: Double)
@@ -23,12 +20,11 @@ package object audio {
   }
 
   object WaveSourceFromFile {
-    def apply(wavFileName: String): WaveSource = {
+    def apply(wavFileName: String): Source[Double, NotUsed] = {
       val BUFSIZE = 256
       val wavFile = WavFile.openWavFile(new File(wavFileName))
       val numChannels = wavFile.getNumChannels
       val numFrames = wavFile.getNumFrames
-      val validBits = wavFile.getValidBits
       val sampleRate = wavFile.getSampleRate
       println(s"Number of channels = $numChannels, number of frames: $numFrames, sampleRate: $sampleRate")
       val buffer = new Array[Double](256 * numChannels)
@@ -48,12 +44,8 @@ package object audio {
       val source = Source(readFrames(wavFile))
       wavFile.close()
       println(s"Source audio from $wavFileName")
-      WaveSource(source, WaveSettings(numChannels, numFrames, validBits, sampleRate))
+      source
     }
   }
-
-  case class WaveSettings(numChannels: Int, numFrames: Long, validBits: Int, sampleRate: Long)
-
-  case class WaveSource(source: Source[Double, NotUsed], waveSetting: WaveSettings)
 
 }

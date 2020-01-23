@@ -32,7 +32,7 @@ object Main extends App {
   val flow =
     Source.fromGraph(source)
       .via(firBasedEcho)
-      .grouped(88)
+      .grouped(44100)
       .runWith(sink)
 
 }

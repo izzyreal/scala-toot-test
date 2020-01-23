@@ -1,14 +1,14 @@
 package com.lunatech.akka.audio
 
-import akka.stream.Shape
-import akka.stream.stage.GraphStageLogic
+import akka.stream.stage.InHandler
 import uk.org.toot.audio.core.{AudioBuffer, AudioProcess, ChannelFormat}
 import uk.org.toot.audio.server.IOAudioProcess
 
-class GraphStageLogicAudioProcess(shape: Shape)
-  extends GraphStageLogic(shape) with IOAudioProcess {
+class InHandlerAudioProcess extends IOAudioProcess with InHandler {
 
-  var ring = Ring[Double](1000)()
+  //  var ring = Ring[Double](1000)()
+
+  var buf = Seq.empty[Double]
 
   override def getChannelFormat: ChannelFormat = ChannelFormat.STEREO
 
@@ -17,24 +17,24 @@ class GraphStageLogicAudioProcess(shape: Shape)
   override def open(): Unit = {}
 
   override def processAudio(buffer: AudioBuffer): Int = {
-    if (isAvailable(shape.inlets(0))) {
-      println("has been pulled: " + hasBeenPulled(shape.inlets(0)))
-    }
-    if (buffer.getSampleCount > ring.size) {
+
+    if (buffer.getSampleCount != buf.size) {
       buffer.makeSilence()
       return AudioProcess.AUDIO_SILENCE
     }
+
     val l: Array[Float] = buffer.getChannel(0)
     val r: Array[Float] = buffer.getChannel(1)
+
     for (i <- l.indices) {
-      val popped = ring.pop
-      ring = popped._2
-      val sample = popped._1
-      l(i) = sample.toFloat
-      r(i) = sample.toFloat
+      l(i) = buf(i).toFloat
+      r(i) = buf(i).toFloat
     }
+    buf = Seq.empty[Double]
     AudioProcess.AUDIO_OK
   }
 
   override def close(): Unit = {}
+
+  override def onPush(): Unit = {}
 }

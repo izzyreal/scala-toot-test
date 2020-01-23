@@ -16,9 +16,6 @@ object AkkaToot extends App {
   val waveFileName = "welcome.wav"
   val WaveSource(soundSource, waveSettings) = WaveSourceFromFile(waveFileName)
 
-  val waveOutputFileName = "welcome-out.wav"
-  val wavOutputFile = WaveOutputFile(waveOutputFileName, waveSettings)
-
   implicit val actorSystem = ActorSystem()
 
   implicit val flowMaterializer = ActorMaterializer()

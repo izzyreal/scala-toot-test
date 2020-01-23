@@ -3,7 +3,7 @@ package com.lunatech.akka
 import java.io.File
 
 import akka.NotUsed
-import akka.stream.scaladsl.{Sink, Source}
+import akka.stream.scaladsl.Source
 import uk.co.labbookpages.WavFile
 
 package object audio {
@@ -22,17 +22,6 @@ package object audio {
     def toFilterStage: FilterStage = FilterStage(s._1, s._2)
   }
 
-  object WaveOutputFile {
-    def apply(wavFileName: String, wavSettings: WaveSettings): WavFile = {
-      WavFile.newWavFile(
-        new File(wavFileName),
-        wavSettings.numChannels,
-        wavSettings.numFrames,
-        wavSettings.validBits,
-        wavSettings.sampleRate)
-    }
-  }
-
   object WaveSourceFromFile {
     def apply(wavFileName: String): WaveSource = {
       val BUFSIZE = 256
@@ -45,18 +34,18 @@ package object audio {
       val buffer = new Array[Double](256 * numChannels)
 
       @scala.annotation.tailrec
-      def rf(wavFile: WavFile, buf: Vector[Double] = Vector.empty[Double]): Vector[Double] = {
+      def readFrames(wavFile: WavFile, buf: Vector[Double] = Vector.empty[Double]): Vector[Double] = {
         wavFile.readFrames(buffer, BUFSIZE) match {
           case 0 =>
             buf
           case BUFSIZE =>
-            rf(wavFile, buf ++ buffer.toVector)
+            readFrames(wavFile, buf ++ buffer.toVector)
           case n =>
             buf ++ buffer.toVector.take(n)
         }
       }
 
-      val source = Source(rf(wavFile))
+      val source = Source(readFrames(wavFile))
       wavFile.close()
       println(s"Source audio from $wavFileName")
       WaveSource(source, WaveSettings(numChannels, numFrames, validBits, sampleRate))

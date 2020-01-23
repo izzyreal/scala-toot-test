@@ -5,8 +5,8 @@ import akka.stream.{Attributes, Inlet, SinkShape}
 import uk.org.toot.audio.mixer.AudioMixer
 import uk.org.toot.audio.server.IOAudioProcess
 
-class StdoutSink(mixer: AudioMixer) extends GraphStage[SinkShape[Seq[Double]]] {
-  val in: Inlet[Seq[Double]] = Inlet("StdoutSink")
+class AkkaTootSink(mixer: AudioMixer) extends GraphStage[SinkShape[Seq[Double]]] {
+  val in: Inlet[Seq[Double]] = Inlet("AkkaTootSink")
   override val shape: SinkShape[Seq[Double]] = SinkShape(in)
 
   var process: GraphStageLogicAudioProcess = _
@@ -20,9 +20,9 @@ class StdoutSink(mixer: AudioMixer) extends GraphStage[SinkShape[Seq[Double]]] {
 
       setHandler(in, new InHandler {
         override def onPush(): Unit = {
-            val data = grab(in)
-            data.foreach(f => buf = buf :+ f)
-            pull(in)
+          val data = grab(in)
+          data.foreach(d => buf = buf.push(d)._2)
+          pull(in)
         }
       })
     }

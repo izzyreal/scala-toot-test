@@ -26,7 +26,7 @@ object AkkaToot extends App {
   val audioServer = new JavaSoundAudioServer
   val mixer = Toot.mixer(audioServer)
 
-  val sink = new StdoutSink(mixer)
+  val sink = new AkkaTootSink(mixer)
 
   audioServer.start()
 

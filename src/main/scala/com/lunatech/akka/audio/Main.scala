@@ -2,9 +2,10 @@ package com.lunatech.akka.audio
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
+import akka.stream.scaladsl.Source
 import uk.org.toot.audio.server.JavaSoundAudioServer
 
-object AkkaToot extends App {
+object Main extends App {
 
   import FilterElements._
 
@@ -13,7 +14,9 @@ object AkkaToot extends App {
 
   val firBasedEcho = buildFIR(firFilterStages)
 
-  val source = WavSource("welcome.wav")
+  //  val source = WavSource("welcome.wav")
+
+  val source = new StreamingWavSource
 
   implicit val actorSystem = ActorSystem()
 
@@ -27,9 +30,9 @@ object AkkaToot extends App {
   audioServer.start()
 
   val flow =
-    source
+    Source.fromGraph(source)
       .via(firBasedEcho)
-      .grouped(1000)
+      .grouped(88)
       .runWith(sink)
 
 }

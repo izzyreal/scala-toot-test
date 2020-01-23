@@ -16,6 +16,7 @@ class AkkaTootSink(mixer: AudioMixer) extends GraphStage[SinkShape[Seq[Double]]]
       setHandler(in, new InHandler {
         override def onPush(): Unit = {
           val data = grab(in)
+//          println("data " + data)
           data.foreach(d => ring = ring.push(d)._2)
           pull(in)
         }

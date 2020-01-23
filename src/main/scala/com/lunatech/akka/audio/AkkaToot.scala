@@ -13,7 +13,7 @@ object AkkaToot extends App {
 
   val firBasedEcho = buildFIR(firFilterStages)
 
-  val source = WaveSourceFromFile("welcome.wav")
+  val source = WavSource("welcome.wav")
 
   implicit val actorSystem = ActorSystem()
 

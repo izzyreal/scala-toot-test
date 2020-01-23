@@ -19,6 +19,7 @@ class StreamingWavSource extends GraphStage[SourceShape[Double]] {
 
       setHandler(out, new OutHandler {
         override def onPull(): Unit = {
+          if (frameIndex % 44100 == 0) println("frameIndex: " + frameIndex)
           val sample = Math.sin((TwoPi * Freq) / SampleRate * frameIndex)
           push(out, sample)
           frameIndex += 1

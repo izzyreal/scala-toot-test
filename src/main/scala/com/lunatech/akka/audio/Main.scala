@@ -5,6 +5,8 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Source
 import uk.org.toot.audio.server.JavaSoundAudioServer
 
+import scala.concurrent.duration._
+
 object Main extends App {
 
   import FilterElements._
@@ -32,7 +34,8 @@ object Main extends App {
   val flow =
     Source.fromGraph(source)
       .via(firBasedEcho)
-      .grouped(88)
+      .throttle(44100, 1.second)
+      .grouped(1000)
       .runWith(sink)
 
 }

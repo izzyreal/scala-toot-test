@@ -8,7 +8,7 @@ import uk.org.toot.audio.server.IOAudioProcess
 class GraphStageLogicAudioProcess(shape: Shape)
   extends GraphStageLogic(shape) with IOAudioProcess {
 
-  var ring = Ring[Double](1000000)()
+  var ring = Ring[Double](100000)()
 
   override def getChannelFormat: ChannelFormat = ChannelFormat.STEREO
 

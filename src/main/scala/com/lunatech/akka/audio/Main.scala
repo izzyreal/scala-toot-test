@@ -16,8 +16,6 @@ object Main extends App {
 
   val firBasedEcho = buildFIR(firFilterStages)
 
-  //  val source = WavSource("welcome.wav")
-
   val source = new StreamingWavSource
 
   implicit val actorSystem = ActorSystem()

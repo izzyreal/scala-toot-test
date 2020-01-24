@@ -2,7 +2,6 @@ package com.lunatech.akka.audio
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.Source
 import uk.org.toot.audio.server.JavaSoundAudioServer
 
 import scala.concurrent.duration._
@@ -30,21 +29,33 @@ object Main extends App {
   audioServer.start()
   println("AudioServer sample rate: " + audioServer.getSampleRate)
 
-//  val flow =
-//    Source.fromGraph(source)
-//      .via(firBasedEcho)
-//        .throttle(44100, 1.second)
-//        .grouped(88)
-//        .runWith(sink)
+  //  val flow =
+  //    Source.fromGraph(source)
+  //      .via(firBasedEcho)
+  //        .throttle(44100, 1.second)
+  //        .grouped(88)
+  //        .runWith(sink)
+
+
+  var period = 0.385398163
+
+  def periodSupplier(): Double = period
+  def increasePeriod(increment: Double): Unit = period += increment
 
   val flow1 =
-    TriangleWave(5000, 0.0002, 0.0004)
-      .via(LFO(0.785398163))
+    TriangleWave(periodSupplier, 0.0002, 0.0004)
+      .via(LFO(0.385398163))
       .via(ScaleAndShift(0.3, 0.2))
-      .via(LFO(0.785398163))
+      .via(LFO(0.385398163))
       .via(firBasedEcho)
       .throttle(44100, 1.second)
       .grouped(88)
       .runWith(sink)
 
+  val ui = new UI
+  ui.visible = true
+  while (true) {
+    ui.repaint()
+    Thread.sleep(10)
+  }
 }

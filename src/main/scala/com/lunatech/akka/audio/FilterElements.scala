@@ -103,18 +103,18 @@ object FilterElements {
   }
 
   object TriangleWave {
-    def apply(period: Int, min: Double, max: Double): Source[Double, NotUsed] = {
+    def apply(periodSupplier: () => Double, min: Double, max: Double): Source[Double, NotUsed] = {
       val intSource = Source.fromIterator(() => Iterator.from(0))
       intSource.statefulMapConcat { () =>
-        val incr = (max - min) / period
+        val incr = (max - min) / periodSupplier()
 
         { y =>
 
-          val seg = (y / period) % 2
+          val seg = (y / periodSupplier()) % 2
           val out = if (seg == 0) {
-            min + (y % period) * incr
+            min + (y % periodSupplier()) * incr
           } else {
-            min + (period - y % period) * incr
+            min + (periodSupplier() - y % periodSupplier()) * incr
           }
 
           Iterable(out)

@@ -102,4 +102,48 @@ object FilterElements {
     }
   }
 
+  object TriangleWave {
+    def apply(period: Int, min: Double, max: Double): Source[Double, NotUsed] = {
+      val intSource = Source.fromIterator(() => Iterator.from(0))
+      intSource.statefulMapConcat { () =>
+        val incr = (max - min) / period
+
+        { y =>
+
+          val seg = (y / period) % 2
+          val out = if (seg == 0) {
+            min + (y % period) * incr
+          } else {
+            min + (period - y % period) * incr
+          }
+
+          Iterable(out)
+        }
+
+      }
+    }
+  }
+
+  object ScaleAndShift {
+    def apply(scale: Double, shift: Double) = Flow[Double].map(sample => sample * scale + shift)
+  }
+
+  object LFO {
+    def apply(phi0: Double) = {
+      Flow[Double].statefulMapConcat { () =>
+        var xn: Double = 0
+        var yn: Double = scala.math.cos(phi0)
+
+        { voltage =>
+          val xnPlus1 = xn - yn * voltage
+          val ynPlus1 = xn * voltage + yn * (1 - voltage * voltage)
+          xn = xnPlus1
+          yn = ynPlus1
+          Iterable(xnPlus1)
+        }
+
+      }
+    }
+  }
+
 }

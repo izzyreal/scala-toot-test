@@ -8,7 +8,6 @@ import uk.co.labbookpages.WavFile
 
 class StreamingWavSource extends GraphStage[SourceShape[Double]] {
 
-
   val wavFile = WavFile.openWavFile(new File("welcome.wav"))
   val numChannels = wavFile.getNumChannels
   val frameBuffer = new Array[Double](numChannels)

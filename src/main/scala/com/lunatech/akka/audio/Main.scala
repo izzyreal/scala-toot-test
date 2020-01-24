@@ -30,8 +30,18 @@ object Main extends App {
   audioServer.start()
   println("AudioServer sample rate: " + audioServer.getSampleRate)
 
-  val flow =
-    Source.fromGraph(source)
+//  val flow =
+//    Source.fromGraph(source)
+//      .via(firBasedEcho)
+//        .throttle(44100, 1.second)
+//        .grouped(88)
+//        .runWith(sink)
+
+  val flow1 =
+    TriangleWave(5000, 0.0002, 0.0004)
+      .via(LFO(0.785398163))
+      .via(ScaleAndShift(0.3, 0.2))
+      .via(LFO(0.785398163))
       .via(firBasedEcho)
       .throttle(44100, 1.second)
       .grouped(88)

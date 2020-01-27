@@ -11,64 +11,31 @@ import scala.swing.event.Key
 object ComputerMidiKeyboard {
 
   val keyToNote = Map(
-    Key.A -> C,
-    Key.W -> CSharp,
-    Key.S -> D,
-    Key.E -> DSharp,
-    Key.D -> E
-
+    Key.A -> Note(48),
+    Key.W -> Note(49),
+    Key.S -> Note(50),
+    Key.E -> Note(51),
+    Key.D -> Note(52),
+    Key.F -> Note(53),
+    Key.T -> Note(54),
+    Key.G -> Note(55),
+    Key.Y -> Note(56),
+    Key.H -> Note(57),
+    Key.U -> Note(58),
+    Key.J -> Note(59),
+    Key.K -> Note(60),
+    Key.O -> Note(61),
+    Key.L -> Note(62)
   )
 
   private val BaseOctave: Int = 3
 
   var octave: Int = BaseOctave
 
-  sealed trait Note {
-    val baseNoteNumber: Int
-    def noteNumber: Int = baseNoteNumber + (octave - BaseOctave) * 12
+  case class Note(baseNote: Int) {
+    def noteNumber: Int = baseNote + (octave - BaseOctave) * 12
+
     def freq: Double = freqFromNote(noteNumber)
   }
-
-  case object C extends Note {
-    val baseNoteNumber = 48
-  }
-
-  case object CSharp extends Note {
-    val baseNoteNumber = 49
-  }
-
-  case object D extends Note {
-    val baseNoteNumber = 50
-  }
-
-  case object DSharp extends Note {
-    val baseNoteNumber = 51
-  }
-
-  case object E extends Note {
-    val baseNoteNumber = 52
-  }
-
-  case object F extends Note {
-    val baseNoteNumber = 53
-  }
-
-  case object FSharp extends Note {
-    val baseNoteNumber = 54
-  }
-
-  case object G extends Note {
-    val baseNoteNumber = 55
-  }
-
-  case object GSharp extends Note {
-    val baseNoteNumber = 56
-  }
-
-  case object A extends Note {
-    val baseNoteNumber = 57
-  }
-
-
 
 }

@@ -26,6 +26,6 @@ class Canvas extends Component {
 
   override def paintComponent(g: Graphics2D): Unit = {
     g.setColor(Color.BLACK)
-    g.fillRect(0, 0, Config.height, Config.height)
+    g.fillRect(0, 0, Config.width, Config.height)
   }
 }

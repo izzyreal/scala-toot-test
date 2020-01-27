@@ -28,5 +28,5 @@ class Sine extends GraphStage[SourceShape[Double]] {
 }
 
 object Sine {
-  var freq = 440
+  var freq = 440d
 }

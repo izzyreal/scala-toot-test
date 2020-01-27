@@ -37,25 +37,25 @@ object Main extends App {
   //        .runWith(sink)
 
 
-  var period = 0.385398163
+  var period = 0.1
 
   def periodSupplier(): Double = period
+
   def increasePeriod(increment: Double): Unit = period += increment
 
   val flow1 =
-    TriangleWave(periodSupplier, 0.0002, 0.0004)
-      .via(LFO(0.385398163))
-      .via(ScaleAndShift(0.3, 0.2))
-      .via(LFO(0.385398163))
+    TriangleWave(periodSupplier, 0.1, 0.2)
+      .via(LFO(1))
+      .via(ScaleAndShift(0.1, 0))
       .via(firBasedEcho)
       .throttle(44100, 1.second)
-      .grouped(88)
+      .grouped(100)
       .runWith(sink)
 
   val ui = new UI
   ui.visible = true
   while (true) {
     ui.repaint()
-    Thread.sleep(10)
+    Thread.sleep(1)
   }
 }

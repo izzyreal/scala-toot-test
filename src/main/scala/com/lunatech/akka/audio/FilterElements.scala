@@ -106,6 +106,7 @@ object FilterElements {
     def apply(periodSupplier: () => Double, min: Double, max: Double): Source[Double, NotUsed] = {
       val intSource = Source.fromIterator(() => Iterator.from(0))
       intSource.statefulMapConcat { () =>
+
         val incr = (max - min) / periodSupplier()
 
         { y =>

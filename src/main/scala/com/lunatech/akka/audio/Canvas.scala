@@ -14,9 +14,9 @@ class Canvas extends Component {
   reactions += {
     case KeyPressed(_, v, _, _) =>
       if (v == KeyConfig.up) {
-        Main.increasePeriod(0.5)
+        Main.increasePeriod(0.05)
       } else if (v == KeyConfig.down) {
-        Main.increasePeriod(-0.5)
+        Main.increasePeriod(-0.05)
       }
   }
 

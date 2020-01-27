@@ -26,11 +26,12 @@ object Main extends App {
 
   val flow1 =
     Source.fromGraph(sineSource)
+      .via(sineSource.adsrEnvelope)
       .via(firBasedEcho)
       .grouped(bufferSize)
       .runWith(sink)
 
-  val ui = new AkkaAudioUI
+  val ui = new AkkaAudioUI(Seq(sineSource))
   while (true) {
     ui.repaint()
     Thread.sleep(1)

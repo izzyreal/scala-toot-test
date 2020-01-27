@@ -4,7 +4,7 @@ import akka.stream.stage.{GraphStage, GraphStageLogic, OutHandler}
 import akka.stream.{Attributes, Outlet, SourceShape}
 import com.lunatech.akka.audio.Config
 
-class Sine extends GraphStage[SourceShape[Double]] {
+class Sine extends GraphStage[SourceShape[Double]] with Synth {
 
   private val SampleRate = Config.sampleRate
   private val TwoPi = 2 * Math.PI
@@ -19,14 +19,10 @@ class Sine extends GraphStage[SourceShape[Double]] {
 
       setHandler(out, new OutHandler {
         override def onPull(): Unit = {
-          val sample = Math.sin((TwoPi * Sine.freq) / SampleRate * frameIndex) * 0.5
+          val sample = Math.sin((TwoPi * freq) / SampleRate * frameIndex) * 0.5
           push(out, sample)
           frameIndex += 1
         }
       })
     }
-}
-
-object Sine {
-  var freq = 440d
 }

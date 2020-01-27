@@ -1,4 +1,4 @@
-package com.lunatech.akka.audio
+package com.lunatech.akka.audio.source
 
 import java.io.File
 
@@ -6,7 +6,7 @@ import akka.stream.stage.{GraphStage, GraphStageLogic, OutHandler}
 import akka.stream.{Attributes, Outlet, SourceShape}
 import uk.co.labbookpages.WavFile
 
-class StreamingWavSource extends GraphStage[SourceShape[Double]] {
+class Wav extends GraphStage[SourceShape[Double]] {
 
   val wavFile = WavFile.openWavFile(new File("welcome.wav"))
   val numChannels = wavFile.getNumChannels

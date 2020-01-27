@@ -1,4 +1,4 @@
-package com.lunatech.akka.audio
+package com.lunatech.akka.audio.sink
 
 import akka.stream.Shape
 import akka.stream.stage.GraphStageLogic

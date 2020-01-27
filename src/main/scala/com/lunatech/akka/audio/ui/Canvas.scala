@@ -1,9 +1,11 @@
-package com.lunatech.akka.audio
+package com.lunatech.akka.audio.ui
 
 import java.awt.Color
 
-import scala.swing.{Component, Graphics2D}
+import com.lunatech.akka.audio.source.Sine
+
 import scala.swing.event.KeyPressed
+import scala.swing.{Component, Graphics2D}
 
 class Canvas extends Component {
 
@@ -14,9 +16,9 @@ class Canvas extends Component {
   reactions += {
     case KeyPressed(_, v, _, _) =>
       if (v == KeyConfig.up) {
-        Main.increasePeriod(0.05)
+        Sine.freq += 10
       } else if (v == KeyConfig.down) {
-        Main.increasePeriod(-0.05)
+        Sine.freq -= 10
       }
   }
 

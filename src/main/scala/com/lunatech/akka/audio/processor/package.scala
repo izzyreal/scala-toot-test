@@ -1,6 +1,6 @@
-package com.lunatech.akka
+package com.lunatech.akka.audio
 
-package object audio {
+package object processor {
 
   type Seq[+A] = scala.collection.immutable.Seq[A]
 

@@ -1,4 +1,4 @@
-package com.lunatech.akka.audio
+package com.lunatech.akka.audio.processor
 
 import akka.NotUsed
 import akka.stream.FlowShape

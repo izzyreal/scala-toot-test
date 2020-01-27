@@ -1,11 +1,10 @@
-package com.lunatech.akka.audio
+package com.lunatech.akka.audio.sink
 
 import uk.org.toot.audio.core.ChannelFormat
 import uk.org.toot.audio.mixer.{AudioMixer, MixerControls, MixerControlsFactory}
 import uk.org.toot.audio.server.AudioServer
 
-object Toot {
-
+package object toot {
   def mixer(audioServer: AudioServer) = {
     val mainMixerControls = new MixerControls("Mixer")
     MixerControlsFactory.createBusStrips(mainMixerControls, "L-R", ChannelFormat.STEREO, 0)
@@ -25,5 +24,4 @@ object Toot {
 
     audioMixer
   }
-
 }

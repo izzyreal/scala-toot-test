@@ -1,4 +1,4 @@
-package com.lunatech.akka.audio
+package com.lunatech.akka.audio.ui
 
 import scala.swing.event.Key
 

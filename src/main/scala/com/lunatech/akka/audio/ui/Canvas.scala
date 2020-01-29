@@ -6,7 +6,7 @@ import com.lunatech.akka.audio.Config
 import com.lunatech.akka.audio.source.Synth
 import com.lunatech.akka.audio.ui.ComputerMidiKeyboard._
 
-import scala.swing.event.{Key, KeyPressed}
+import scala.swing.event.{Key, KeyPressed, KeyReleased}
 import scala.swing.{Component, Graphics2D}
 
 class Canvas(synths: Seq[Synth]) extends Component {
@@ -18,6 +18,8 @@ class Canvas(synths: Seq[Synth]) extends Component {
   reactions += {
     case KeyPressed(_, keyValue, _, _) if keyToNote.contains(keyValue) =>
       synths.foreach(_.trigger(keyToNote(keyValue).freq))
+    case KeyReleased(_, keyValue, _, _) if keyToNote.contains(keyValue) =>
+      synths.foreach(_.stop())
     case KeyPressed(_, Key.Z, _, _) =>
       octave -= 1
     case KeyPressed(_, Key.X, _, _) =>

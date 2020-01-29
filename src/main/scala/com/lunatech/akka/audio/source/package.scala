@@ -15,32 +15,41 @@ package object source {
   def freqFromNote(note: Int) = baseFreq * scala.math.pow(2, (note - baseNote) / 12d)
 
   trait Synth {
-    var freq = 440d
+    protected var freq = 440d
 
-    val envVars = new EnvelopeControls(0, "", 0)
+    private var release = false
+
+    private val envVars = new EnvelopeControls(0, "", 0)
+
+    private val attackControl = envVars.getControls.get(0).asInstanceOf[FloatControl]
+    private val decayControl = envVars.getControls.get(1).asInstanceOf[FloatControl]
+    private val sustainControl = envVars.getControls.get(2).asInstanceOf[FloatControl]
+    private val releaseControl = envVars.getControls.get(3).asInstanceOf[FloatControl]
+
     envVars.setSampleRate(Config.sampleRate)
 
-    val attack = envVars.getControls.get(0).asInstanceOf[FloatControl]
-    val decay = envVars.getControls.get(1).asInstanceOf[FloatControl]
-    val sustain = envVars.getControls.get(2).asInstanceOf[FloatControl]
-    val release = envVars.getControls.get(3).asInstanceOf[FloatControl]
+    attackControl.setValue(15)
+    decayControl.setValue(1000)
+    sustainControl.setValue(1)
+    releaseControl.setValue(15)
 
-    attack.setValue(15)
-    decay.setValue(1000)
-    sustain.setValue(0)
-    release.setValue(1000)
-
-    val envelopeGenerator = new EnvelopeGenerator(envVars)
+    private val envelopeGenerator = new EnvelopeGenerator(envVars)
 
     val adsrEnvelope = Flow[Double].mapConcat { sample =>
-      val envelope = envelopeGenerator.getEnvelope(false)
+      val envelope = envelopeGenerator.getEnvelope(release)
       Iterable(envelope * sample)
     }
 
     def trigger(f: Double) = {
       freq = f
+      release = false
       envelopeGenerator.trigger()
     }
+
+    def stop(): Unit = {
+      release = true
+    }
+
   }
 
 }

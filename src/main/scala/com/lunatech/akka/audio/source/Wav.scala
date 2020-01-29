@@ -8,11 +8,8 @@ import uk.co.labbookpages.WavFile
 
 class Wav extends GraphStage[SourceShape[Double]] with Synth {
 
-  val wavFile = WavFile.openWavFile(new File("welcome.wav"))
-  val numChannels = wavFile.getNumChannels
-  val frameBuffer = new Array[Double](numChannels)
-  var frameCounter: Int = 0
-  val cache = new Array[Double](wavFile.getNumFrames.toInt)
+  var frameIndex: Int = 0
+  val cache = readWavToCache()
 
   val out: Outlet[Double] = Outlet("StreamingWavSource")
   override val shape: SourceShape[Double] = SourceShape(out)
@@ -21,17 +18,24 @@ class Wav extends GraphStage[SourceShape[Double]] with Synth {
     new GraphStageLogic(shape) {
       setHandler(out, new OutHandler {
         override def onPull(): Unit = {
-          if (wavFile.getFramesRemaining == 0) {
-            wavFile.close()
-            push(out, cache(frameCounter % wavFile.getNumFrames.toInt))
-            frameCounter += 1
-          } else {
-            wavFile.readFrames(frameBuffer, 1)
-            cache(frameCounter % wavFile.getNumFrames.toInt) = frameBuffer(0)
-            push(out, frameBuffer(0))
-            frameCounter += 1
-          }
+          push(out, cache(frameIndex % cache.length))
+          frameIndex += 1
         }
       })
     }
+
+  override def trigger(f: Double): Unit = {
+    if (keyDown) return
+    frameIndex = 0
+    super.trigger(f)
+  }
+
+  private def readWavToCache() = {
+    val wavFile = WavFile.openWavFile(new File("breakbeat.wav"))
+    val frameCount = wavFile.getNumFrames.toInt
+    val frameBuffer = new Array[Double](frameCount)
+    wavFile.readFrames(frameBuffer, 0, frameCount)
+    wavFile.close()
+    frameBuffer
+  }
 }

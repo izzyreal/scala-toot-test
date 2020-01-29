@@ -22,10 +22,10 @@ object Main extends App {
 
   val sink = new JavaSoundSink
 
-    val source = new Sine
-//  val source = new Wav
+//    val source = new Sine
+  val source = new Wav
 
-  val flow1 =
+  val flow =
     Source.fromGraph(source)
       .via(source.adsrEnvelope)
       .via(firBasedEcho)

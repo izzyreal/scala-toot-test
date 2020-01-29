@@ -15,9 +15,9 @@ package object source {
   def freqFromNote(note: Int) = baseFreq * scala.math.pow(2, (note - baseNote) / 12d)
 
   trait Synth {
-    protected var freq = 440d
 
-    private var release = false
+    protected var freq = 440d
+    protected var keyDown = false
 
     private val envVars = new EnvelopeControls(0, "", 0)
 
@@ -36,18 +36,19 @@ package object source {
     private val envelopeGenerator = new EnvelopeGenerator(envVars)
 
     val adsrEnvelope = Flow[Double].mapConcat { sample =>
-      val envelope = envelopeGenerator.getEnvelope(release)
+      val envelope = envelopeGenerator.getEnvelope(!keyDown)
       Iterable(envelope * sample)
     }
 
-    def trigger(f: Double) = {
+    def trigger(f: Double): Unit = {
+      if (keyDown) return
       freq = f
-      release = false
+      keyDown = true
       envelopeGenerator.trigger()
     }
 
     def stop(): Unit = {
-      release = true
+      keyDown = false
     }
 
   }

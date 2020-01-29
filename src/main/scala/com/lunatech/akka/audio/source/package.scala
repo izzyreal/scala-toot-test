@@ -1,6 +1,7 @@
 package com.lunatech.akka.audio
 
-import com.lunatech.akka.audio.processor.ADSREnvelope
+import akka.stream.scaladsl.Flow
+import com.lunatech.akka.audio.processor.Iterable
 import uk.org.toot.control.FloatControl
 import uk.org.toot.synth.modules.envelope.{EnvelopeControls, EnvelopeGenerator}
 
@@ -29,13 +30,16 @@ package object source {
     sustain.setValue(0)
     release.setValue(1000)
 
-    val env = new EnvelopeGenerator(envVars)
+    val envelopeGenerator = new EnvelopeGenerator(envVars)
 
-    val adsrEnvelope = ADSREnvelope(env)
+    val adsrEnvelope = Flow[Double].mapConcat { sample =>
+      val envelope = envelopeGenerator.getEnvelope(false)
+      Iterable(envelope * sample)
+    }
 
     def trigger(f: Double) = {
       freq = f
-      env.trigger()
+      envelopeGenerator.trigger()
     }
   }
 

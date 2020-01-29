@@ -4,7 +4,7 @@ import akka.actor.ActorSystem
 import akka.stream.scaladsl.Source
 import com.lunatech.akka.audio.processor._
 import com.lunatech.akka.audio.sink.JavaSoundSink
-import com.lunatech.akka.audio.source.Sine
+import com.lunatech.akka.audio.source.{Sine, Wav}
 import com.lunatech.akka.audio.ui.AkkaAudioUI
 
 object Main extends App {
@@ -22,16 +22,17 @@ object Main extends App {
 
   val sink = new JavaSoundSink
 
-  val sineSource = new Sine
+    val source = new Sine
+//  val source = new Wav
 
   val flow1 =
-    Source.fromGraph(sineSource)
-      .via(sineSource.adsrEnvelope)
+    Source.fromGraph(source)
+      .via(source.adsrEnvelope)
       .via(firBasedEcho)
       .grouped(bufferSize)
       .runWith(sink)
 
-  val ui = new AkkaAudioUI(Seq(sineSource))
+  val ui = new AkkaAudioUI(Seq(source))
   while (true) {
     ui.repaint()
     Thread.sleep(1)

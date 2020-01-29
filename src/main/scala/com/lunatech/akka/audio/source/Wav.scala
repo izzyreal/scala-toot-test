@@ -6,7 +6,7 @@ import akka.stream.stage.{GraphStage, GraphStageLogic, OutHandler}
 import akka.stream.{Attributes, Outlet, SourceShape}
 import uk.co.labbookpages.WavFile
 
-class Wav extends GraphStage[SourceShape[Double]] {
+class Wav extends GraphStage[SourceShape[Double]] with Synth {
 
   val wavFile = WavFile.openWavFile(new File("welcome.wav"))
   val numChannels = wavFile.getNumChannels

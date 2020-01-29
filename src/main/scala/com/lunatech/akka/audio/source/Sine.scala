@@ -9,7 +9,7 @@ class Sine extends GraphStage[SourceShape[Double]] with Synth {
   private val SampleRate = Config.sampleRate
   private val TwoPi = 2 * Math.PI
 
-  val out: Outlet[Double] = Outlet("StreamingWavSource")
+  val out: Outlet[Double] = Outlet("SineSynth")
   override val shape: SourceShape[Double] = SourceShape(out)
 
   override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
